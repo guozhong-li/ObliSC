@@ -10,17 +10,10 @@ generated indexes, experiment logs, server credentials, or deployment machinery.
 
 ## Framework Overview
 
-FO and FO-par share the following index-and-search pipeline:
+![ObliSC overall framework (Figure 2 in the paper)](assets/framework.png)
 
-```mermaid
-flowchart LR
-    I["Public centroid/assignment index"] --> P["Padded IMI"]
-    P --> A["Fixed-budget cell activation"]
-    Q["Query vector"] --> A
-    A --> S["Collision-score aggregation and selection"]
-    S --> R["Distance refinement and top-k"]
-    Q --> R
-```
+Figure 2 from the paper shows the shared offline index construction and the
+online FO and FO-par search paths.
 
 1. **Shared index.** Load the pretrained centroids and assignments, organize
    items into subspace IMI cells, and pad each cell to its subspace's capacity.
@@ -69,6 +62,7 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
 CMakeLists.txt
 LICENSE
 README.md
+assets/framework.png              Figure 2 from the paper
 include/ppsc/ppsc.hpp
 src/algorithm1_framework.cpp       FO batch execution
 src/algorithm2_index_construct.cpp shared index loading and padding
