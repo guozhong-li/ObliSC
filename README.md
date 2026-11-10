@@ -11,10 +11,10 @@ generated indexes, experiment logs, server credentials, or deployment machinery.
 
 ## Framework Overview
 
-![ObliSC overall framework (Figure 2 in the paper)](assets/framework.png)
+![ObliSC overall framework](assets/framework.png)
 
-Figure 2 from the paper shows the shared offline index construction and the
-online ObliSC-FO and ObliSC-FO-par search paths.
+ObliSC separates offline index preparation from online query processing.
+ObliSC-FO and ObliSC-FO-par share the same index and search stages:
 
 1. **Shared index.** Load the pretrained centroids and assignments, organize
    items into subspace IMI cells, and pad each cell to its subspace's capacity.
@@ -63,7 +63,7 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
 CMakeLists.txt
 LICENSE
 README.md
-assets/framework.png              Figure 2 from the paper
+assets/framework.png              ObliSC framework overview
 include/ppsc/ppsc.hpp
 src/algorithm1_framework.cpp       ObliSC-FO batch execution
 src/algorithm2_index_construct.cpp shared index loading and padding
