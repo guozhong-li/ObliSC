@@ -1,7 +1,8 @@
-# PPSC: FO and FO-par
+# ObliSC: FO and FO-par
 
-C++17 source release for the fixed-budget FO search pipeline and its parallel
-FO-par implementation. Both use the same public padded index, candidate budgets,
+ObliSC is a subspace-collision search framework. This C++17 source release
+provides its fixed-budget search base, **ObliSC-FO**, and parallel implementation,
+**ObliSC-FO-par**. Both use the same public padded index, candidate budgets,
 collision scores, refinement count, and deterministic tie rules.
 
 This directory contains only the two search implementations, shared utilities,
@@ -13,7 +14,7 @@ generated indexes, experiment logs, server credentials, or deployment machinery.
 ![ObliSC overall framework (Figure 2 in the paper)](assets/framework.png)
 
 Figure 2 from the paper shows the shared offline index construction and the
-online FO and FO-par search paths.
+online ObliSC-FO and ObliSC-FO-par search paths.
 
 1. **Shared index.** Load the pretrained centroids and assignments, organize
    items into subspace IMI cells, and pad each cell to its subspace's capacity.
@@ -24,9 +25,9 @@ online FO and FO-par search paths.
    evaluate their distances to the query, and return the top-k results with
    deterministic ID tie breaking.
 
-FO processes a query's subspaces sequentially. FO-par parallelizes subspace
-processing, voting, candidate selection, and distance evaluation. With identical
-inputs and parameters, parallel execution preserves the ordered results; it
+ObliSC-FO processes a query's subspaces sequentially. ObliSC-FO-par parallelizes
+subspace processing, voting, candidate selection, and distance evaluation. With
+identical inputs and parameters, parallel execution preserves the ordered results; it
 changes the execution schedule, not the index or search budgets. The packaged
 backend and its security limitations are described under **Implementation Scope**.
 
@@ -64,11 +65,11 @@ LICENSE
 README.md
 assets/framework.png              Figure 2 from the paper
 include/ppsc/ppsc.hpp
-src/algorithm1_framework.cpp       FO batch execution
+src/algorithm1_framework.cpp       ObliSC-FO batch execution
 src/algorithm2_index_construct.cpp shared index loading and padding
-src/algorithm3_fo_canactive.cpp    FO candidate activation
-src/algorithm4_fo_topk_refine.cpp  FO refinement
-src/parallel/                    FO-par execution, activation, refinement
+src/algorithm3_fo_canactive.cpp    ObliSC-FO candidate activation
+src/algorithm4_fo_topk_refine.cpp  ObliSC-FO refinement
+src/parallel/                    ObliSC-FO-par execution, activation, refinement
 src/dataset.cpp                  data I/O and runtime audit
 src/fo_primitives.cpp             retained legacy primitive helpers
 src/metrics.cpp                  recall@k
@@ -84,7 +85,7 @@ benchmark (little-endian for the evaluated x86 servers).
 
 * Base and query files: row-major `float32`, with `N*D` and `Q*D` elements.
 * Ground truth: row-major `int64`, with `Q*k` zero-based item identifiers.
-* Public index: the centroid/assignment format consumed by the original FO
+* Public index: the centroid/assignment format consumed by the original ObliSC-FO
   pipeline. It starts with `Ns*2*C*(subspace_dim/2)` `float32` centroids, followed
   by `Ns*2*N` `int32` assignments. For each subspace, assignments for the first
   half precede those for the second half; centroids follow the same order.
@@ -138,11 +139,11 @@ the same settings. `--sc-fixed-cells` is the fixed activation-cell budget.
 
 * `--threads T` sets the total worker budget, capped at 100. Default: 1, or
   `PPSC_NUM_THREADS` if supplied. Set it explicitly for comparisons.
-* FO processes queries concurrently but runs each query's subspaces in sequence.
-* FO-par uses `--workers-per-subspace p` (default 2, supported 1 through 5).
+* ObliSC-FO processes queries concurrently but runs each query's subspaces in sequence.
+* ObliSC-FO-par uses `--workers-per-subspace p` (default 2, supported 1 through 5).
   A query uses `Ns*p` workers, and the default number of concurrent query groups
   is `min(Q, floor(T/(Ns*p)))`. `Ns*p` must fit within `T`.
-* `--query-groups G` optionally reduces the number of concurrent FO-par queries;
+* `--query-groups G` optionally reduces the number of concurrent ObliSC-FO-par queries;
   it cannot increase the total thread budget. Zero selects the default.
 
 For batch comparisons, keep inputs, budgets, thread limit, warmup protocol,
@@ -174,10 +175,10 @@ record `access_pattern_protection=false` and `privacy_verified=false`; legacy
 fixed-shape or sort counters are instrumentation, not a security certificate.
 SEV capability checks also do not establish that a run is inside an attested TEE.
 
-The sequential FO core is retained from the legacy FO source snapshot; FO-par
-uses the validated packed score/min-rank voting and exact heap selection path,
-with optional grouped centroid-distance/cell-sort workers. Packaging adds typed
+The sequential ObliSC-FO core is retained from the legacy source snapshot;
+ObliSC-FO-par uses the validated packed score/min-rank voting and exact heap
+selection path, with optional grouped centroid-distance/cell-sort workers. Packaging adds typed
 parallel options, safe direct-memory defaults, input checks, and audit labels;
 it does not replace the search kernels or claim to recreate historical table
 measurements. Regression tests check ordered candidates and final IDs against
-the FO core for all five worker-group sizes, including ties and padding.
+the ObliSC-FO core for all five worker-group sizes, including ties and padding.
