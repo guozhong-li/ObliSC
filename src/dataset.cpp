@@ -1,4 +1,4 @@
-#include "ppsc/ppsc.hpp"
+#include "oblisc/oblisc.hpp"
 
 #include <cstdlib>
 #include <fstream>

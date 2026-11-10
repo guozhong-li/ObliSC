@@ -64,7 +64,7 @@ CMakeLists.txt
 LICENSE
 README.md
 assets/framework.png              ObliSC framework overview
-include/ppsc/ppsc.hpp
+include/oblisc/oblisc.hpp
 src/algorithm1_framework.cpp       ObliSC-FO batch execution
 src/algorithm2_index_construct.cpp shared index loading and padding
 src/algorithm3_fo_canactive.cpp    ObliSC-FO candidate activation
