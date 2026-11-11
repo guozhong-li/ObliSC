@@ -5,6 +5,8 @@ provides its fixed-budget search base, **ObliSC-FO**, and parallel implementatio
 **ObliSC-FO-par**. Both use the same public padded index, candidate budgets,
 collision scores, refinement count, and deterministic tie rules.
 
+The full paper, including the appendix, is available in the [technical report](ObliSC-TR.pdf).
+
 This directory contains only the two search implementations, shared utilities,
 build configuration, and tests. It does not include competing methods, datasets,
 generated indexes, experiment logs, server credentials, or deployment machinery.
